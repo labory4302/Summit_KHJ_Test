@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:xliff="http://schemas.android.com/apk/res-auto">
+
+    <!-- - - - - - - - - - - - - -->
+    <!--Used by SunshineDateUtils-->
+    <!-- - - - - - - - - - - - - -->
     <string name="app_name">Summit_KHJ_Test</string>
+    <string name="action_refersh">Refresh</string>
 
     <!-- - - - - - - - - - - - - -->
     <!--Used by SunshineDateUtils-->
