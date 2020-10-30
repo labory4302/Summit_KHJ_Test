@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.Menu;
@@ -13,14 +14,16 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.summit_khj_test.utilities.NetworkUtils;
 import com.summit_khj_test.utilities.OpenWeatherJsonUtils;
 import com.summit_khj_test.data.SunshinePreferences;
+import com.summit_khj_test.ForecastAdapter.ForecastAdapterOnClickHandler;
 
 import java.net.URL;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements ForecastAdapterOnClickHandler {
     private TextView mErrorMessageDisplay;      //에러 메시지 표시
     private ProgressBar mLoadingIndicator;      //로딩 바 표시
     private RecyclerView mRecyclerView;         //리사이클러뷰
@@ -46,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
                                                 //성능저하
 
         //어댑터 생성
-        mForecastAdapter = new ForecastAdapter();
+        mForecastAdapter = new ForecastAdapter(this);
 
         //리사이클러뷰와 어댑터 연결
         mRecyclerView.setAdapter(mForecastAdapter);
@@ -60,6 +63,13 @@ public class MainActivity extends AppCompatActivity {
         showWeatherDataView();
         String location = SunshinePreferences.getPreferredWeatherLocation(this);
         new FetchWeatherTask().execute(location);
+    }
+
+    //리사이클러뷰 클릭리스너 구현
+    @Override
+    public void onClick(String weatherForDay) {
+        Context context = this;
+        Toast.makeText(context, weatherForDay, Toast.LENGTH_SHORT).show();
     }
 
     //날씨 데이터 로드 후 날씨 데이터 표시

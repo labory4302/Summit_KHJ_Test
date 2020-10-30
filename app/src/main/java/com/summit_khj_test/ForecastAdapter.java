@@ -3,6 +3,7 @@ package com.summit_khj_test;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
@@ -15,14 +16,32 @@ public class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.Foreca
 
     private String[] mWeatherData;
 
-    public ForecastAdapter() {}
+    private final ForecastAdapterOnClickHandler mClickHandler;
 
-    public class ForecastAdapterViewHolder extends RecyclerView.ViewHolder {
+    //클릭리스너 인터페이스
+    public interface ForecastAdapterOnClickHandler {
+        void onClick(String weatherForDay);
+    }
+
+    //생성자
+    public ForecastAdapter(ForecastAdapterOnClickHandler clickHandler) {
+        mClickHandler = clickHandler;
+    }
+
+    public class ForecastAdapterViewHolder extends RecyclerView.ViewHolder implements OnClickListener {
         public final TextView mWeatherTextView;
 
         public ForecastAdapterViewHolder(View view) {
             super(view);
             mWeatherTextView = (TextView) view.findViewById(R.id.tv_weather_data);
+            view.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View v) {
+            int adapterPosition = getAdapterPosition();
+            String weatherForDay = mWeatherData[adapterPosition];
+            mClickHandler.onClick(weatherForDay);
         }
     }
 
