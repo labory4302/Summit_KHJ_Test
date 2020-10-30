@@ -1,7 +1,11 @@
 package com.summit_khj_test;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.loader.app.LoaderManager;
+import androidx.loader.content.AsyncTaskLoader;
+import androidx.loader.content.Loader;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -17,7 +21,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.summit_khj_test.utilities.NetworkUtils;
 import com.summit_khj_test.utilities.OpenWeatherJsonUtils;
@@ -26,9 +29,11 @@ import com.summit_khj_test.ForecastAdapter.ForecastAdapterOnClickHandler;
 
 import java.net.URL;
 
-public class MainActivity extends AppCompatActivity implements ForecastAdapterOnClickHandler {
+public class MainActivity extends AppCompatActivity implements ForecastAdapterOnClickHandler, LoaderManager.LoaderCallbacks<String[]> {
 
     private static final String TAG = MainActivity.class.getSimpleName();
+
+    private static final int FORECAST_LOADER_ID = 0;    //로더 ID
 
     private TextView mErrorMessageDisplay;      //에러 메시지 표시
     private ProgressBar mLoadingIndicator;      //로딩 바 표시
@@ -60,15 +65,84 @@ public class MainActivity extends AppCompatActivity implements ForecastAdapterOn
         //리사이클러뷰와 어댑터 연결
         mRecyclerView.setAdapter(mForecastAdapter);
 
-        //날씨데이터 로드
-        loadWeatherData();
+        int loaderId = FORECAST_LOADER_ID;                                      //로더 ID
+        LoaderManager.LoaderCallbacks<String[]> callback = MainActivity.this;   //로더 콜백 구현
+        Bundle bundleForLoader = null;                                          //번들 생성
+
+
+        //로더가 초기화되고 활성화되었는지 확인
+        //로더가 없는 경우 로더를 생성하고 시작
+        //그렇지 않은 경우 마지막으로 생성된 로더가 다시 사용됨
+        getSupportLoaderManager().initLoader(loaderId, bundleForLoader, callback);
     }
 
-    //날씨 데이터 로드
-    private void loadWeatherData() {
-        showWeatherDataView();
-        String location = SunshinePreferences.getPreferredWeatherLocation(this);
-        new FetchWeatherTask().execute(location);
+    //ID를 부여하여 새 로더를 반환
+    @Override
+    public Loader<String[]> onCreateLoader(int id, final Bundle loaderArgs) {
+        return new AsyncTaskLoader<String[]>(this) {
+
+            //날씨 데이터 보관하고 캐싱하는 역할
+            String[] mWeatherData = null;
+
+            @Override
+            protected void onStartLoading() {
+                if (mWeatherData != null) {
+                    deliverResult(mWeatherData);
+                } else {
+                    mLoadingIndicator.setVisibility(View.VISIBLE);
+                    forceLoad();
+                }
+            }
+
+            //http통신을 통해 날씨 데이터들을 가져옴
+            @Override
+            public String[] loadInBackground() {
+                //위치 정보 가져옴
+                String locationQuery = SunshinePreferences
+                        .getPreferredWeatherLocation(MainActivity.this);
+
+                URL weatherRequestUrl = NetworkUtils.buildUrl(locationQuery);
+
+                try {
+                    String jsonWeatherResponse = NetworkUtils
+                            .getResponseFromHttpUrl(weatherRequestUrl);
+
+                    String[] simpleJsonWeatherData = OpenWeatherJsonUtils
+                            .getSimpleWeatherStringsFromJson(MainActivity.this, jsonWeatherResponse);
+
+                    return simpleJsonWeatherData;
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    return null;
+                }
+            }
+
+            //결과를 등록된 리스너에게 전송
+            public void deliverResult(String[] data) {
+                mWeatherData = data;
+                super.deliverResult(data);
+            }
+        };
+    }
+
+    //데이터를 다 가져왔을 때
+    @Override
+    public void onLoadFinished(Loader<String[]> loader, String[] data) {
+        mLoadingIndicator.setVisibility(View.INVISIBLE);
+        mForecastAdapter.setWeatherData(data);
+        if (null == data) {
+            showErrorMessage();
+        } else {
+            showWeatherDataView();
+        }
+    }
+
+    @Override
+    public void onLoaderReset(@NonNull Loader<String[]> loader) {}
+
+    //데이터 리셋 메소드
+    private void invalidateData() {
+        mForecastAdapter.setWeatherData(null);
     }
 
     //리사이클러뷰 클릭리스너 구현
@@ -91,49 +165,6 @@ public class MainActivity extends AppCompatActivity implements ForecastAdapterOn
     private void showErrorMessage() {
         mRecyclerView.setVisibility(View.INVISIBLE);
         mErrorMessageDisplay.setVisibility(View.VISIBLE);
-    }
-
-    public class FetchWeatherTask extends AsyncTask<String, Void, String[]> {
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            mLoadingIndicator.setVisibility(View.VISIBLE);
-        }
-
-        @Override
-        protected String[] doInBackground(String... params) {
-            if (params.length == 0) {
-                return null;
-            }
-
-            String location = params[0];
-            URL jsonWeatherUrl = NetworkUtils.buildUrl(location);
-
-            try {
-                String jsonWeatherResponse = NetworkUtils
-                        .getResponseFromHttpUrl(jsonWeatherUrl);
-
-                String[] simpleJsonWeatherData = OpenWeatherJsonUtils
-                        .getSimpleWeatherStringsFromJson(MainActivity.this, jsonWeatherResponse);
-
-                return simpleJsonWeatherData;
-            } catch (Exception e) {
-                e.printStackTrace();
-                return null;
-            }
-        }
-
-        @Override
-        protected void onPostExecute(String[] weatherData) {
-            mLoadingIndicator.setVisibility(View.INVISIBLE);
-            if (weatherData != null) {
-                showWeatherDataView();
-                mForecastAdapter.setWeatherData(weatherData);
-            } else {
-                showErrorMessage();
-            }
-        }
     }
 
     //위치 확인
@@ -164,9 +195,10 @@ public class MainActivity extends AppCompatActivity implements ForecastAdapterOn
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
+
         if (id == R.id.action_refresh) {
-            mForecastAdapter.setWeatherData(null);
-            loadWeatherData();
+            invalidateData();
+            getSupportLoaderManager().restartLoader(FORECAST_LOADER_ID, null, this);
             return true;
         } else if (id == R.id.action_map) {
             openLocationInMap();
