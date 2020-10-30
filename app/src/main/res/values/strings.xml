@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:xliff="http://schemas.android.com/apk/res-auto">
+
+    <!-- - - - - - - - - - - - - -->
+    <!--Used by SunshineDateUtils-->
+    <!-- - - - - - - - - - - - - -->
     <string name="app_name">Summit_KHJ_Test</string>
+    <string name="action_refersh">Refresh</string>
+    <string name="error_message">에러가 발생했습니다. REFRESH를 클릭하여 다시 시도하십시오.</string>
 
     <!-- - - - - - - - - - - - - -->
     <!--Used by SunshineDateUtils-->
