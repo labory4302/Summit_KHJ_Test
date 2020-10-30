@@ -35,20 +35,14 @@ public class SunshineDateUtils {
         return utcDate - gmtOffset;
     }
 
-    /**
-     * Since all dates from the database are in UTC, we must convert the local date to the date in
-     * UTC time. This function performs that conversion using the TimeZone offset.
-     *
-     * @param localDate The local datetime to convert to a UTC datetime, in milliseconds.
-     * @return The UTC date (the local datetime + the TimeZone offset) in milliseconds.
-     */
+    //지역시간을 기반으로 offset값 반환
     public static long getUTCDateFromLocal(long localDate) {
         TimeZone tz = TimeZone.getDefault();
         long gmtOffset = tz.getOffset(localDate);
         return localDate + gmtOffset;
     }
 
-     //ex) "Today, June 8", "Tomorrow",
+    //ex) "Today, June 8", "Tomorrow",
     public static String getFriendlyDateString(Context context, long dateInMillis, boolean showFullDate) {
 
         long localDate = getLocalDateFromUTC(dateInMillis);

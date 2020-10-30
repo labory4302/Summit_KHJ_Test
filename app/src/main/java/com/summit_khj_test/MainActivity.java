@@ -22,6 +22,7 @@ public class MainActivity extends AppCompatActivity {
 
         mWeatherTextView = (TextView) findViewById(R.id.tv_weather_data);
 
+        //날씨데이터 로드
         loadWeatherData();
     }
 

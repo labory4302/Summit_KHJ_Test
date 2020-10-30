@@ -6,13 +6,13 @@
     <!--Used by SunshineDateUtils-->
     <!-- - - - - - - - - - - - - -->
 
-    <!-- For labelling today's forecast [CHAR LIMIT=15] -->
+    <!-- 오늘 [CHAR LIMIT=15] -->
     <string name="today">Today</string>
 
-    <!-- For labelling tomorrow's forecast [CHAR LIMIT=15] -->
+    <!-- 내일 [CHAR LIMIT=15] -->
     <string name="tomorrow">Tomorrow</string>
 
-    <!-- Date format [CHAR LIMIT=NONE] -->
+    <!-- 날짜 표현 포맷 [CHAR LIMIT=NONE] -->
     <string name="format_full_friendly_date">
         <xliff:g id="month">%1$s</xliff:g>, <xliff:g id="day">%2$s</xliff:g>
     </string>
@@ -32,17 +32,17 @@
         <xliff:g id="temp">%1.0f</xliff:g>\u00B0F
     </string>
 
-    <!-- Wind in kph [CHAR LIMIT=25] -->
+    <!-- 풍속 km/h [CHAR LIMIT=25] -->
     <string name="format_wind_kmh">
         <xliff:g id="speed">%1$1.0f</xliff:g> km/h <xliff:g id="direction">%2$s</xliff:g>
     </string>
 
-    <!-- Wind in mph [CHAR LIMIT=25] -->
+    <!-- 풍속 mph [CHAR LIMIT=25] -->
     <string name="format_wind_mph">
         <xliff:g id="speed">%1$1.0f</xliff:g> mph <xliff:g id="direction">%2$s</xliff:g>
     </string>
 
-    <!-- Weather Conditions (From OpenWeatherMap) -->
+    <!-- 날씨 상태 (From OpenWeatherMap) -->
     <string name="condition_2xx">Storm</string>
     <string name="condition_3xx">Drizzle</string>
     <string name="condition_500">Light Rain</string>

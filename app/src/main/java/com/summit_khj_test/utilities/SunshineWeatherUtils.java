@@ -6,11 +6,7 @@ import android.util.Log;
 import com.summit_khj_test.R;
 import com.summit_khj_test.data.SunshinePreferences;
 
-/**
- * Contains useful utilities for a weather app, such as conversion between Celsius and Fahrenheit,
- * from kph to mph, and from degrees to NSEW.  It also contains the mapping of weather condition
- * codes in OpenWeatherMap to strings.  These strings are contained
- */
+//데이터 변환 및 유틸리티 메소드 클래스
 public final class SunshineWeatherUtils {
 
     private static final String LOG_TAG = SunshineWeatherUtils.class.getSimpleName();
@@ -46,16 +42,7 @@ public final class SunshineWeatherUtils {
         return highLowStr;
     }
 
-    /**
-     * This method uses the wind direction in degrees to determine compass direction as a
-     * String. (eg NW) The method will return the wind String in the following form: "2 km/h SW"
-     *
-     * @param context   Android Context to access preferences and resources
-     * @param windSpeed Wind speed in kilometers / hour
-     * @param degrees   Degrees as measured on a compass, NOT temperature degrees!
-     *                  See https://www.mathsisfun.com/geometry/degrees.html
-     * @return Wind String in the following form: "2 km/h SW"
-     */
+    //ex) "2 km/h SW"
     public static String getFormattedWind(Context context, float windSpeed, float degrees) {
 
         int windFormat = R.string.format_wind_kmh;
@@ -65,10 +52,7 @@ public final class SunshineWeatherUtils {
             windSpeed = .621371192237334f * windSpeed;
         }
 
-        /*
-         * You know what's fun, writing really long if/else statements with tons of possible
-         * conditions. Seriously, try it!
-         */
+        //방위 변환
         String direction = "Unknown";
         if (degrees >= 337.5 || degrees < 22.5) {
             direction = "N";
@@ -90,15 +74,7 @@ public final class SunshineWeatherUtils {
         return String.format(context.getString(windFormat), windSpeed, direction);
     }
 
-    /**
-     * Helper method to provide the string according to the weather
-     * condition id returned by the OpenWeatherMap call.
-     *
-     * @param context   Android context
-     * @param weatherId from OpenWeatherMap API response
-     *                  http://bugs.openweathermap.org/projects/api/wiki/Weather_Condition_Codes
-     * @return String for the weather condition, null if no relation is found.
-     */
+    //ID로 날씨 상태 반환
     public static String getStringForWeatherCondition(Context context, int weatherId) {
         int stringId;
         if (weatherId >= 200 && weatherId <= 232) {
@@ -268,18 +244,10 @@ public final class SunshineWeatherUtils {
         return context.getString(stringId);
     }
 
-    /**
-     * Helper method to provide the icon resource id according to the weather condition id returned
-     * by the OpenWeatherMap call.
-     *
-     * @param weatherId from OpenWeatherMap API response
-     * @return resource id for the corresponding icon. -1 if no relation is found.
-     */
+    //날씨ID로 해당 아이콘 표시
     public static int getIconResourceForWeatherCondition(int weatherId) {
-        /*
-         * Based on weather code data found at:
-         * See http://bugs.openweathermap.org/projects/api/wiki/Weather_Condition_Codes
-         */
+
+        //See https://openweathermap.org/weather-conditions
         if (weatherId >= 200 && weatherId <= 232) {
             return R.drawable.storm;
         } else if (weatherId >= 300 && weatherId <= 321) {
@@ -306,13 +274,7 @@ public final class SunshineWeatherUtils {
         return -1;
     }
 
-    /**
-     * Helper method to provide the art resource id according to the weather condition id returned
-     * by the OpenWeatherMap call.
-     *
-     * @param weatherId from OpenWeatherMap API response
-     * @return resource id for the corresponding icon. -1 if no relation is found.
-     */
+    //날씨ID로 리소스 ID를 제공
     public static int getArtResourceForWeatherCondition(int weatherId) {
         if (weatherId >= 200 && weatherId <= 232) {
             return R.drawable.art_storm;
