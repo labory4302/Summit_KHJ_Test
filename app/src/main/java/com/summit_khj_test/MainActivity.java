@@ -7,8 +7,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -25,6 +27,9 @@ import com.summit_khj_test.ForecastAdapter.ForecastAdapterOnClickHandler;
 import java.net.URL;
 
 public class MainActivity extends AppCompatActivity implements ForecastAdapterOnClickHandler {
+
+    private static final String TAG = MainActivity.class.getSimpleName();
+
     private TextView mErrorMessageDisplay;      //에러 메시지 표시
     private ProgressBar mLoadingIndicator;      //로딩 바 표시
     private RecyclerView mRecyclerView;         //리사이클러뷰
@@ -131,7 +136,21 @@ public class MainActivity extends AppCompatActivity implements ForecastAdapterOn
         }
     }
 
+    //위치 확인
+    private void openLocationInMap() {
+        String addressString = "1600 Ampitheatre Parkway, CA";
+        Uri geoLocation = Uri.parse("geo:0,0?q=" + addressString);
 
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.setData(geoLocation);
+
+        if (intent.resolveActivity(getPackageManager()) != null) {
+            startActivity(intent);
+        } else {
+            Log.d(TAG, "Couldn't call " + geoLocation.toString()
+                    + ", no receiving apps installed!");
+        }
+    }
 
     //메뉴추가
     @Override
@@ -148,6 +167,9 @@ public class MainActivity extends AppCompatActivity implements ForecastAdapterOn
         if (id == R.id.action_refresh) {
             mForecastAdapter.setWeatherData(null);
             loadWeatherData();
+            return true;
+        } else if (id == R.id.action_map) {
+            openLocationInMap();
             return true;
         }
 
