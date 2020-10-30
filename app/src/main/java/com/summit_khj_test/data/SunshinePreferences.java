@@ -4,10 +4,7 @@ import android.content.Context;
 
 public class SunshinePreferences {
 
-    /*
-     * Human readable location string, provided by the API.  Because for styling,
-     * "Mountain View" is more recognizable than 94043.
-     */
+    //도시 이름
     public static final String PREF_CITY_NAME = "city_name";
 
     /*
@@ -17,10 +14,7 @@ public class SunshinePreferences {
     public static final String PREF_COORD_LAT = "coord_lat";
     public static final String PREF_COORD_LONG = "coord_long";
 
-    /*
-     * Before you implement methods to return your REAL preference for location,
-     * we provide some default values to work with.
-     */
+    //날씨 위치 설정 기본 값
     private static final String DEFAULT_WEATHER_LOCATION = "94043,USA";
     private static final double[] DEFAULT_WEATHER_COORDINATES = {37.4284, 122.0724};
 
