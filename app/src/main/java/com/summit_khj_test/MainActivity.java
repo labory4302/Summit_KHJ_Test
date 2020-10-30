@@ -203,6 +203,10 @@ public class MainActivity extends AppCompatActivity implements ForecastAdapterOn
         } else if (id == R.id.action_map) {
             openLocationInMap();
             return true;
+        } else if (id == R.id.action_settings) {
+            Intent startSettingActivity = new Intent(this, SettingActivity.class);
+            startActivity(startSettingActivity);
+            return true;
         }
 
         return super.onOptionsItemSelected(item);
