@@ -1,9 +1,13 @@
 package com.summit_khj_test;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.widget.TextView;
 
 import com.summit_khj_test.utilities.NetworkUtils;
@@ -64,5 +68,28 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         }
+    }
+
+
+
+    //메뉴추가
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater menuInflater = getMenuInflater();
+        menuInflater.inflate(R.menu.forecast, menu);
+        return true;
+    }
+
+    //메뉴 선택 시
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.action_refresh) {
+            mWeatherTextView.setText("");
+            loadWeatherData();
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 }
