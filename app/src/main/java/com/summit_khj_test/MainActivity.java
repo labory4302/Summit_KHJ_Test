@@ -8,6 +8,7 @@ import android.widget.TextView;
 
 import com.summit_khj_test.utilities.NetworkUtils;
 import com.summit_khj_test.utilities.OpenWeatherJsonUtils;
+import com.summit_khj_test.data.SunshinePreferences;
 
 import java.net.URL;
 
@@ -20,6 +21,13 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         mWeatherTextView = (TextView) findViewById(R.id.tv_weather_data);
+
+        loadWeatherData();
+    }
+
+    private void loadWeatherData() {
+        String location = SunshinePreferences.getPreferredWeatherLocation(this);
+        new FetchWeatherTask().execute(location);
     }
 
     public class FetchWeatherTask extends AsyncTask<String, Void, String[]> {
