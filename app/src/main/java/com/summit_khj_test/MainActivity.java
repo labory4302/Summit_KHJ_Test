@@ -2,8 +2,15 @@ package com.summit_khj_test;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.widget.TextView;
+
+import com.summit_khj_test.utilities.NetworkUtils;
+import com.summit_khj_test.utilities.OpenWeatherJsonUtils;
+import com.summit_khj_test.data.SunshinePreferences;
+
+import java.net.URL;
 
 public class MainActivity extends AppCompatActivity {
     private TextView mWeatherTextView;
@@ -15,27 +22,47 @@ public class MainActivity extends AppCompatActivity {
 
         mWeatherTextView = (TextView) findViewById(R.id.tv_weather_data);
 
-        //임시 날씨 데이터
-        String[] tmpWhetherData = {
-                "10/29 맑음 10°C  18°C",
-                "10/30 구름조금 9°C  16°C",
-                "10/31 흐림 4°C  11°C",
-                "11/01 눈 1°C  8°C",
-                "11/02 눈 2°C  10°C",
-                "11/03 맑음 8°C  19°C",
-                "11/04 눈 2°C  11°C",
-                "11/05 눈 1°C  8°C",
-                "11/06 눈 1°C  7°C",
-                "11/07 맑음 5°C  11°C",
-                "11/08 눈 2°C  14°C",
-                "11/09 눈 3°C  11°C",
-                "11/10 눈 3°C  10°C",
-                "11/11 맑음 2°C  8°C",
-                "11/12 눈 1°C  8°C"
-        };
+        //날씨데이터 로드
+        loadWeatherData();
+    }
 
-        for (String howWhether : tmpWhetherData) {
-            mWeatherTextView.append(howWhether + "\n\n");
+    private void loadWeatherData() {
+        String location = SunshinePreferences.getPreferredWeatherLocation(this);
+        new FetchWeatherTask().execute(location);
+    }
+
+    public class FetchWeatherTask extends AsyncTask<String, Void, String[]> {
+
+        @Override
+        protected String[] doInBackground(String... params) {
+            if (params.length == 0) {
+                return null;
+            }
+
+            String location = params[0];
+            URL jsonWeatherUrl = NetworkUtils.buildUrl(location);
+
+            try {
+                String jsonWeatherResponse = NetworkUtils
+                        .getResponseFromHttpUrl(jsonWeatherUrl);
+
+                String[] simpleJsonWeatherData = OpenWeatherJsonUtils
+                        .getSimpleWeatherStringsFromJson(MainActivity.this, jsonWeatherResponse);
+
+                return simpleJsonWeatherData;
+            } catch (Exception e) {
+                e.printStackTrace();
+                return null;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(String[] weatherData) {
+            if (weatherData != null) {
+                for (String weatherString : weatherData) {
+                    mWeatherTextView.append((weatherString) + "\n\n\n");
+                }
+            }
         }
     }
 }
