@@ -31,6 +31,8 @@ public class WeatherDbHelper extends SQLiteOpenHelper {
 
                 WeatherEntry.COLUMN_WIND_SPEED + " REAL, "                    +
                 WeatherEntry.COLUMN_DEGREES    + " REAL" + ");";
+
+        sqLiteDatabase.execSQL(SQL_CREATE_WEATHER_TABLE);
     }
 
     @Override
