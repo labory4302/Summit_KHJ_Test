@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!--선택리스트 표시-->
     <string-array name="pref_units_options">
         <item>@string/pref_units_label_metric</item>
         <item>@string/pref_units_label_imperial</item>
     </string-array>
 
+    <!--선택 값 항목-->
     <string-array name="pref_units_values">
         <item>@string/pref_units_metric</item>
         <item>@string/pref_units_imperial</item>

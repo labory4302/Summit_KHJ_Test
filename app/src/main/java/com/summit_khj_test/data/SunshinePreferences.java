@@ -1,6 +1,11 @@
 package com.summit_khj_test.data;
 
 import android.content.Context;
+import android.content.SharedPreferences;
+
+import androidx.preference.PreferenceManager;
+
+import com.summit_khj_test.R;
 
 public class SunshinePreferences {
 
@@ -56,29 +61,32 @@ public class SunshinePreferences {
         /** This will be implemented in a future lesson **/
     }
 
-    /**
-     * Returns the location currently set in Preferences. The default location this method
-     * will return is "94043,USA", which is Mountain View, California. Mountain View is the
-     * home of the headquarters of the Googleplex!
-     *
-     * @param context Context used to get the SharedPreferences
-     * @return Location The current user has set in SharedPreferences. Will default to
-     * "94043,USA" if SharedPreferences have not been implemented yet.
-     */
+    //유저가 설정한 위치값 반환
     public static String getPreferredWeatherLocation(Context context) {
-        /** This will be implemented in a future lesson **/
-        return getDefaultWeatherLocation();
+        SharedPreferences sharedPreferences = PreferenceManager
+                .getDefaultSharedPreferences(context);
+        String keyForLocation = context.getString(R.string.pref_location_key);
+        String defaultLocation = context.getString(R.string.pref_location_default);
+        return sharedPreferences.getString(keyForLocation, defaultLocation);
     }
 
-    /**
-     * Returns true if the user has selected metric temperature display.
-     *
-     * @param context Context used to get the SharedPreferences
-     * @return true If metric display should be used
-     */
+    //사용자가 설정한 온도단위가 metric일 경우 true 반환
     public static boolean isMetric(Context context) {
-        /** This will be implemented in a future lesson **/
-        return true;
+        SharedPreferences sharedPreferences = PreferenceManager
+                .getDefaultSharedPreferences(context);
+        String keyForUnits = context.getString(R.string.pref_units_key);
+        String defaultUnits = context.getString(R.string.pref_units_metric);
+        String preferredUnits = sharedPreferences.getString(keyForUnits, defaultUnits);
+
+        String metric = context.getString(R.string.pref_units_metric);
+
+        boolean userPrefersMetric;
+        if (metric.equals(preferredUnits)) {
+            userPrefersMetric = true;
+        } else {
+            userPrefersMetric = false;
+        }
+        return userPrefersMetric;
     }
 
     /**
