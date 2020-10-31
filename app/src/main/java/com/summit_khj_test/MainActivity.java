@@ -5,6 +5,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.loader.app.LoaderManager;
 import androidx.loader.content.AsyncTaskLoader;
+import androidx.loader.content.CursorLoader;
 import androidx.loader.content.Loader;
 import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -13,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -24,6 +26,8 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.summit_khj_test.data.WeatherContract;
+import com.summit_khj_test.utilities.FakeDataUtils;
 import com.summit_khj_test.utilities.NetworkUtils;
 import com.summit_khj_test.utilities.OpenWeatherJsonUtils;
 import com.summit_khj_test.data.SunshinePreferences;
@@ -33,30 +37,42 @@ import java.net.URL;
 
 public class MainActivity extends AppCompatActivity implements
         ForecastAdapterOnClickHandler,
-        LoaderManager.LoaderCallbacks<String[]>,
-        SharedPreferences.OnSharedPreferenceChangeListener {
+        LoaderManager.LoaderCallbacks<Cursor> {
 
     private static final String TAG = MainActivity.class.getSimpleName();
 
-    private static final int FORECAST_LOADER_ID = 0;    //로더 ID
+    //데이터를 가져올 속성
+    public static final String[] MAIN_FORECAST_PROJECTION = {
+            WeatherContract.WeatherEntry.COLUMN_DATE,
+            WeatherContract.WeatherEntry.COLUMN_MAX_TEMP,
+            WeatherContract.WeatherEntry.COLUMN_MIN_TEMP,
+            WeatherContract.WeatherEntry.COLUMN_WEATHER_ID,
+    };
 
-    private static boolean PREFERENCES_HAVE_BEEN_UPDATED = false;
+    //쿼리에서 데이터를 더 빨리 접근하도록 인덱스 지정
+    public static final int INDEX_WEATHER_DATE = 0;
+    public static final int INDEX_WEATHER_MAX_TEMP = 1;
+    public static final int INDEX_WEATHER_MIN_TEMP = 2;
+    public static final int INDEX_WEATHER_CONDITION_ID = 3;
 
-    private TextView mErrorMessageDisplay;      //에러 메시지 표시
+    private static final int ID_FORECAST_LOADER = 44;    //로더 ID
+
     private ProgressBar mLoadingIndicator;      //로딩 바 표시
     private RecyclerView mRecyclerView;         //리사이클러뷰
     private ForecastAdapter mForecastAdapter;   //리사이클러뷰 어댑터
+    private int mPosition = RecyclerView.NO_POSITION;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        getSupportActionBar().setElevation(0f);
 
-        mErrorMessageDisplay = (TextView) findViewById(R.id.tv_error_message_display);
+        FakeDataUtils.insertFakeData(this);
+
         mLoadingIndicator = (ProgressBar) findViewById(R.id.pb_loading_indicator);
         mRecyclerView = (RecyclerView) findViewById(R.id.rv_forecast);
-        mErrorMessageDisplay = (TextView) findViewById(R.id.tv_error_message_display);
 
         LinearLayoutManager layoutManager
                 = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
@@ -67,116 +83,76 @@ public class MainActivity extends AppCompatActivity implements
                                                 //성능저하
 
         //어댑터 생성
-        mForecastAdapter = new ForecastAdapter(this);
+        mForecastAdapter = new ForecastAdapter(this, this);
 
         //리사이클러뷰와 어댑터 연결
         mRecyclerView.setAdapter(mForecastAdapter);
 
-        int loaderId = FORECAST_LOADER_ID;                                      //로더 ID
-        LoaderManager.LoaderCallbacks<String[]> callback = MainActivity.this;   //로더 콜백 구현
-        Bundle bundleForLoader = null;                                          //번들 생성
-
+        showLoading();
 
         //로더가 초기화되고 활성화되었는지 확인
         //로더가 없는 경우 로더를 생성하고 시작
         //그렇지 않은 경우 마지막으로 생성된 로더가 다시 사용됨
-        getSupportLoaderManager().initLoader(loaderId, bundleForLoader, callback);
-
-        Log.d(TAG, "onCreate: registering preference changed listener");
-
-        PreferenceManager.getDefaultSharedPreferences(this)
-                .registerOnSharedPreferenceChangeListener(this);
+        getSupportLoaderManager().initLoader(ID_FORECAST_LOADER, null, this);
     }
 
     //ID를 부여하여 새 로더를 반환
     @Override
-    public Loader<String[]> onCreateLoader(int id, final Bundle loaderArgs) {
-        return new AsyncTaskLoader<String[]>(this) {
+    public Loader<Cursor> onCreateLoader(int id, Bundle bundle) {
+        switch (id) {
+            case ID_FORECAST_LOADER:
+                Uri forecastQueryUri = WeatherContract.WeatherEntry.CONTENT_URI;
+                String sortOrder = WeatherContract.WeatherEntry.COLUMN_DATE + " ASC";
 
-            //날씨 데이터 보관하고 캐싱하는 역할
-            String[] mWeatherData = null;
+                String selection = WeatherContract.WeatherEntry.getSqlSelectForTodayOnwards();
 
-            @Override
-            protected void onStartLoading() {
-                if (mWeatherData != null) {
-                    deliverResult(mWeatherData);
-                } else {
-                    mLoadingIndicator.setVisibility(View.VISIBLE);
-                    forceLoad();
-                }
-            }
-
-            //http통신을 통해 날씨 데이터들을 가져옴
-            @Override
-            public String[] loadInBackground() {
-                //위치 정보 가져옴
-                String locationQuery = SunshinePreferences
-                        .getPreferredWeatherLocation(MainActivity.this);
-
-                URL weatherRequestUrl = NetworkUtils.buildUrl(locationQuery);
-
-                try {
-                    String jsonWeatherResponse = NetworkUtils
-                            .getResponseFromHttpUrl(weatherRequestUrl);
-
-                    String[] simpleJsonWeatherData = OpenWeatherJsonUtils
-                            .getSimpleWeatherStringsFromJson(MainActivity.this, jsonWeatherResponse);
-
-                    return simpleJsonWeatherData;
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    return null;
-                }
-            }
-
-            //결과를 등록된 리스너에게 전송
-            public void deliverResult(String[] data) {
-                mWeatherData = data;
-                super.deliverResult(data);
-            }
-        };
+                return new CursorLoader(this,
+                        forecastQueryUri,
+                        MAIN_FORECAST_PROJECTION,
+                        selection,
+                        null,
+                        sortOrder);
+            default:
+                throw new RuntimeException("Loader Not Implemented: " + id);
+        }
     }
 
     //데이터를 다 가져왔을 때
     @Override
-    public void onLoadFinished(Loader<String[]> loader, String[] data) {
-        mLoadingIndicator.setVisibility(View.INVISIBLE);
-        mForecastAdapter.setWeatherData(data);
-        if (null == data) {
-            showErrorMessage();
-        } else {
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        mForecastAdapter.swapCursor(data);
+        if (mPosition == RecyclerView.NO_POSITION)
+            mPosition = 0;
+        mRecyclerView.smoothScrollToPosition(mPosition);
+
+        if (data.getCount() != 0)
             showWeatherDataView();
-        }
     }
 
     @Override
-    public void onLoaderReset(@NonNull Loader<String[]> loader) {}
-
-    //데이터 리셋 메소드
-    private void invalidateData() {
-        mForecastAdapter.setWeatherData(null);
+    public void onLoaderReset(Loader<Cursor> loader) {
+        mForecastAdapter.swapCursor(null);
     }
 
     //리사이클러뷰 클릭리스너 구현
     @Override
-    public void onClick(String weatherForDay) {
-        Context context = this;
-        Class destinationClass = DetailActivity.class;
-        Intent intentToStartDetailActivity = new Intent(context, destinationClass);
-        intentToStartDetailActivity.putExtra(Intent.EXTRA_TEXT, weatherForDay);
-        startActivity(intentToStartDetailActivity);
+    public void onClick(long date) {
+        Intent weatherDetailIntent = new Intent(MainActivity.this, DetailActivity.class);
+        Uri uriForDateClicked = WeatherContract.WeatherEntry.buildWeatherUriWithDate(date);
+        weatherDetailIntent.setData(uriForDateClicked);
+        startActivity(weatherDetailIntent);
     }
 
     //날씨 데이터 로드 후 날씨 데이터 표시
     private void showWeatherDataView() {
-        mErrorMessageDisplay.setVisibility(View.INVISIBLE);
+        mLoadingIndicator.setVisibility(View.INVISIBLE);
         mRecyclerView.setVisibility(View.VISIBLE);
     }
 
-    //에러메시지 표시
-    private void showErrorMessage() {
+    //날씨 데이터 로딩 중
+    private void showLoading() {
         mRecyclerView.setVisibility(View.INVISIBLE);
-        mErrorMessageDisplay.setVisibility(View.VISIBLE);
+        mLoadingIndicator.setVisibility(View.VISIBLE);
     }
 
     //위치 확인
@@ -195,23 +171,6 @@ public class MainActivity extends AppCompatActivity implements
         }
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-        if (PREFERENCES_HAVE_BEEN_UPDATED) {
-            Log.d(TAG, "onStart: preferences were updated");
-            getSupportLoaderManager().restartLoader(FORECAST_LOADER_ID, null, this);
-            PREFERENCES_HAVE_BEEN_UPDATED = false;
-        }
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        PreferenceManager.getDefaultSharedPreferences(this)
-                .unregisterOnSharedPreferenceChangeListener(this);
-    }
-
     //메뉴추가
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -225,24 +184,15 @@ public class MainActivity extends AppCompatActivity implements
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
-        if (id == R.id.action_refresh) {
-            invalidateData();
-            getSupportLoaderManager().restartLoader(FORECAST_LOADER_ID, null, this);
+        if (id == R.id.action_settings) {
+            startActivity(new Intent(this, SettingActivity.class));
             return true;
-        } else if (id == R.id.action_map) {
+        }
+        if (id == R.id.action_map) {
             openLocationInMap();
-            return true;
-        } else if (id == R.id.action_settings) {
-            Intent startSettingActivity = new Intent(this, SettingActivity.class);
-            startActivity(startSettingActivity);
             return true;
         }
 
         return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String s) {
-        PREFERENCES_HAVE_BEEN_UPDATED = true;
     }
 }

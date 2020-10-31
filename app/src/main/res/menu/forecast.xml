@@ -3,12 +3,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/action_refresh"
-        android:title="@string/action_refersh"
-        android:orderInCategory="1"
-        app:showAsAction="ifRoom"/>
-
-    <item
         android:id="@+id/action_map"
         android:title="@string/action_map"
         app:showAsAction="never" />
