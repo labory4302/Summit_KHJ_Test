@@ -10,6 +10,7 @@
 
     <string name="action_map">Map Location</string>
     <string name="action_share">Share</string>
+    <string name="title_activity_detail">Details</string>
     <string name="action_settings">Settings</string>
 
     <string name="content_authority">com.summit_khj_test</string>
@@ -60,6 +61,14 @@
     <!-- 화씨 [CHAR LIMIT=NONE] -->
     <string name="pref_units_imperial" translatable="false">imperial</string>
 
+    <string name="pref_enable_notifications_key" translatable="false">enable_notifications</string>
+    <string name="pref_enable_notifications_label">Weather Notifications</string>
+
+    <string name="pref_enable_notifications_true">Enabled</string>
+    <string name="pref_enable_notifications_false">Not Enabled</string>
+
+    <string name="pref_last_notification">last_notification</string>
+
 
     <!-- - - - - - - - - - - - - - - -->
     <!-- Used by SunshineWeatherUtils-->
@@ -75,6 +84,7 @@
         <xliff:g id="temp">%1.0f</xliff:g>\u00B0F
     </string>
 
+    <string name="wind_label">Wind</string>
     <!-- 풍속 km/h [CHAR LIMIT=25] -->
     <string name="format_wind_kmh">
         <xliff:g id="speed">%1$1.0f</xliff:g> km/h <xliff:g id="direction">%2$s</xliff:g>
@@ -83,6 +93,18 @@
     <!-- 풍속 mph [CHAR LIMIT=25] -->
     <string name="format_wind_mph">
         <xliff:g id="speed">%1$1.0f</xliff:g> mph <xliff:g id="direction">%2$s</xliff:g>
+    </string>
+
+    <string name="pressure_label">Pressure</string>
+    <!-- 기압 format -->
+    <string name="format_pressure">
+        <xliff:g id="pressure">%1.0f</xliff:g> hPa
+    </string>
+
+    <string name="humidity_label">Humidity</string>
+    <!-- 습도 -->
+    <string name="format_humidity">
+        <xliff:g id="humidity">%1.0f</xliff:g> %%
     </string>
 
     <!-- 날씨 상태 (From OpenWeatherMap) -->
