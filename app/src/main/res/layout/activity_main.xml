@@ -6,9 +6,7 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_forecast"
         android:layout_height="match_parent"
-        android:layout_width="match_parent"
-        android:clipToPadding="false"
-        android:paddingBottom="8dp"/>
+        android:layout_width="match_parent" />
 
     <ProgressBar
         android:id="@+id/pb_loading_indicator"
