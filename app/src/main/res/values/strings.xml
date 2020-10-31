@@ -34,7 +34,7 @@
     <!-- 위치 [CHAR LIMIT=30] -->
     <string name="pref_location_label">Location</string>
 
-    <!-- 사용자 지정 위치값 [CHAR LIMIT=NONE] -->
+    <!-- location 키 값 [CHAR LIMIT=NONE] -->
     <string name="pref_location_key" translatable="false">location</string>
 
     <!-- 기본 위치값 [CHAR LIMIT=NONE] -->
@@ -43,19 +43,19 @@
     <!-- Label for the temperature units preference [CHAR LIMIT=30] -->
     <string name="pref_units_label">Temperature Units</string>
 
-    <!-- Label for metric option in temperature unit preference [CHAR LIMIT=25] -->
+    <!-- 섭씨를 사용자에게 표현 [CHAR LIMIT=25] -->
     <string name="pref_units_label_metric">Metric</string>
 
-    <!-- Label for imperial option in temperature unit preference [CHAR LIMIT=25] -->
+    <!-- 화씨를 사용자에게 표현 [CHAR LIMIT=25] -->
     <string name="pref_units_label_imperial">Imperial</string>
 
-    <!-- 사용자 지정 온도 단위 [CHAR LIMIT=NONE] -->
+    <!-- 온도 단위 키 값 [CHAR LIMIT=NONE] -->
     <string name="pref_units_key" translatable="false">units</string>
 
-    <!-- 기본 온도 단위 표현 [CHAR LIMIT=NONE] -->
+    <!-- 섭씨 [CHAR LIMIT=NONE] -->
     <string name="pref_units_metric" translatable="false">metric</string>
 
-    <!-- Value in SharedPreferences for imperial temperature unit option [CHAR LIMIT=NONE] -->
+    <!-- 화씨 [CHAR LIMIT=NONE] -->
     <string name="pref_units_imperial" translatable="false">imperial</string>
 
 
