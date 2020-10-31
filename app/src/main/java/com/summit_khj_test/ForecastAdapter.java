@@ -25,7 +25,7 @@ public class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.Foreca
 
     //클릭리스너 인터페이스
     public interface ForecastAdapterOnClickHandler {
-        void onClick(String weatherForDay);
+        void onClick(long date);
     }
 
     private Cursor mCursor;
@@ -47,8 +47,10 @@ public class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.Foreca
 
         @Override
         public void onClick(View v) {
-            String weatherForDay = weatherSummary.getText().toString();
-            mClickHandler.onClick(weatherForDay);
+            int adapterPosition = getAdapterPosition();
+            mCursor.moveToPosition(adapterPosition);
+            long dateInMillis = mCursor.getLong(MainActivity.INDEX_WEATHER_DATE);
+            mClickHandler.onClick(dateInMillis);
         }
     }
 

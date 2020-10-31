@@ -136,12 +136,11 @@ public class MainActivity extends AppCompatActivity implements
 
     //리사이클러뷰 클릭리스너 구현
     @Override
-    public void onClick(String weatherForDay) {
-        Context context = this;
-        Class destinationClass = DetailActivity.class;
-        Intent intentToStartDetailActivity = new Intent(context, destinationClass);
-        intentToStartDetailActivity.putExtra(Intent.EXTRA_TEXT, weatherForDay);
-        startActivity(intentToStartDetailActivity);
+    public void onClick(long date) {
+        Intent weatherDetailIntent = new Intent(MainActivity.this, DetailActivity.class);
+        Uri uriForDateClicked = WeatherContract.WeatherEntry.buildWeatherUriWithDate(date);
+        weatherDetailIntent.setData(uriForDateClicked);
+        startActivity(weatherDetailIntent);
     }
 
     //날씨 데이터 로드 후 날씨 데이터 표시
