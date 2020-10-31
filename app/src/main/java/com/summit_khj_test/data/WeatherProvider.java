@@ -5,12 +5,15 @@ import android.content.ContentProvider;
 import android.content.ContentValues;
 import android.content.UriMatcher;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.CancellationSignal;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+
+import com.summit_khj_test.utilities.SunshineDateUtils;
 
 public class WeatherProvider extends ContentProvider {
 
@@ -40,7 +43,40 @@ public class WeatherProvider extends ContentProvider {
 
     @Override
     public int bulkInsert( Uri uri, ContentValues[] values) {
-        throw new RuntimeException(" you need to implement the bulkInsert mehtod!");
+        final SQLiteDatabase sqLiteDatabase = mOpenHelper.getWritableDatabase();
+
+        switch (sUriMatcher.match(uri)) {
+            case CODE_WEATHER:
+                sqLiteDatabase.beginTransaction();
+                int rowsInserted = 0;
+                try {
+                    for (ContentValues value : values) {
+                        long weatherDate =
+                                value.getAsLong(WeatherContract.WeatherEntry.COLUMN_DATE);
+                        if (!SunshineDateUtils.isDateNormalized(weatherDate)) {
+                            throw new IllegalArgumentException("Date must be normalized to insert");
+                        }
+
+                        long _id = sqLiteDatabase.insert(WeatherContract.WeatherEntry.TABLE_NAME,
+                                null, value);
+                        if (_id != -1) {
+                            rowsInserted++;
+                        }
+                    }
+                    sqLiteDatabase.setTransactionSuccessful();
+                } finally {
+                    sqLiteDatabase.endTransaction();
+                }
+
+                if (rowsInserted > 0) {
+                    getContext().getContentResolver().notifyChange(uri, null);
+                }
+
+                return rowsInserted;
+
+            default:
+                return super.bulkInsert(uri, values);
+        }
     }
 
     @Override

@@ -28,6 +28,15 @@ public class SunshineDateUtils {
         return retValNew;
     }
 
+    public static boolean isDateNormalized(long millisSinceEpoch) {
+        boolean isDateNormalized = false;
+        if (millisSinceEpoch % DAY_IN_MILLIS == 0) {
+            isDateNormalized = true;
+        }
+
+        return isDateNormalized;
+    }
+
     //날짜표현을 위해 offset값을 가져옴
     public static long getLocalDateFromUTC(long utcDate) {
         TimeZone tz = TimeZone.getDefault();
