@@ -1,7 +1,6 @@
 package com.summit_khj_test.utilities;
 
 import android.content.Context;
-import android.util.Log;
 
 import com.summit_khj_test.R;
 import com.summit_khj_test.data.SunshinePreferences;
@@ -277,7 +276,6 @@ public final class SunshineWeatherUtils {
             return R.drawable.art_clear;
         }
 
-        Log.e(LOG_TAG, "Unknown Weather: " + weatherId);
         return R.drawable.storm;
     }
 
@@ -312,7 +310,6 @@ public final class SunshineWeatherUtils {
         } else if (weatherId >= 951 && weatherId <= 957) {
             return R.drawable.art_clear;
         }
-        Log.e(LOG_TAG, "Unknown Weather: " + weatherId);
         return R.drawable.art_storm;
     }
 
@@ -347,7 +344,6 @@ public final class SunshineWeatherUtils {
             return R.drawable.art_clear;
         }
 
-        Log.e(LOG_TAG, "Unknown Weather: " + weatherId);
         return R.drawable.art_storm;
     }
 }

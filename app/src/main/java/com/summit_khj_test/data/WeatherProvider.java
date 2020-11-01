@@ -7,11 +7,6 @@ import android.content.UriMatcher;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
-import android.os.Bundle;
-import android.os.CancellationSignal;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 import com.summit_khj_test.utilities.SunshineDateUtils;
 
@@ -41,6 +36,7 @@ public class WeatherProvider extends ContentProvider {
         return matcher;
     }
 
+    //다량의 데이터 insert
     @Override
     public int bulkInsert( Uri uri, ContentValues[] values) {
         final SQLiteDatabase sqLiteDatabase = mOpenHelper.getWritableDatabase();

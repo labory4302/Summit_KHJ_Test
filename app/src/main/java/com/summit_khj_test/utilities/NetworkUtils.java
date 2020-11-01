@@ -2,7 +2,6 @@ package com.summit_khj_test.utilities;
 
 import android.content.Context;
 import android.net.Uri;
-import android.util.Log;
 
 import com.summit_khj_test.data.SunshinePreferences;
 
@@ -64,7 +63,6 @@ public final class NetworkUtils {
 
         try {
             URL weatherQueryUrl = new URL(weatherQueryUri.toString());
-            Log.v(TAG, "URL: " + weatherQueryUrl);
             return weatherQueryUrl;
         } catch (MalformedURLException e) {
             e.printStackTrace();
@@ -82,7 +80,6 @@ public final class NetworkUtils {
 
         try {
             URL weatherQueryUrl = new URL(weatherQueryUri.toString());
-            Log.v(TAG, "URL: " + weatherQueryUrl);
             return weatherQueryUrl;
         } catch (MalformedURLException e) {
             e.printStackTrace();

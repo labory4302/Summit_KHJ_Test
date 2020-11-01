@@ -1,21 +1,15 @@
 package com.summit_khj_test;
 
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.loader.app.LoaderManager;
-import androidx.loader.content.AsyncTaskLoader;
 import androidx.loader.content.CursorLoader;
 import androidx.loader.content.Loader;
-import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -23,17 +17,11 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 
 import com.summit_khj_test.data.WeatherContract;
 import com.summit_khj_test.sync.SunshineSyncUtils;
-import com.summit_khj_test.utilities.FakeDataUtils;
-import com.summit_khj_test.utilities.NetworkUtils;
-import com.summit_khj_test.utilities.OpenWeatherJsonUtils;
 import com.summit_khj_test.data.SunshinePreferences;
 import com.summit_khj_test.ForecastAdapter.ForecastAdapterOnClickHandler;
-
-import java.net.URL;
 
 public class MainActivity extends AppCompatActivity implements
         ForecastAdapterOnClickHandler,

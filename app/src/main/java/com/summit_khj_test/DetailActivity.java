@@ -6,10 +6,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.TextView;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ShareCompat;
 import androidx.databinding.DataBindingUtil;
@@ -179,7 +176,7 @@ public class DetailActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void onLoaderReset(@NonNull Loader<Cursor> loader) {}
+    public void onLoaderReset(Loader<Cursor> loader) {}
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
