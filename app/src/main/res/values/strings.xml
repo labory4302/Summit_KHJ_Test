@@ -20,10 +20,10 @@
     <!-- - - - - - - - - - - - - -->
 
     <!-- 오늘 [CHAR LIMIT=15] -->
-    <string name="today">Today</string>
+    <string name="today">오늘</string>
 
     <!-- 내일 [CHAR LIMIT=15] -->
-    <string name="tomorrow">Tomorrow</string>
+    <string name="tomorrow">내일</string>
 
     <!-- 날짜 표현 포맷 [CHAR LIMIT=NONE] -->
     <string name="format_full_friendly_date">
