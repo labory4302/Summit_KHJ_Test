@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.content.Context;
 
 import com.summit_khj_test.data.SunshinePreferences;
+import com.summit_khj_test.data.WeatherContract;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -157,7 +158,6 @@ public class OpenWeatherJsonUtils {
         long normalizedUtcStartDay = SunshineDateUtils.getNormalizedUtcDateForToday();
 
         for (int i = 0; i < jsonWeatherArray.length(); i++) {
-
             long dateTimeMillis;
             double pressure;
             int humidity;
@@ -169,13 +169,8 @@ public class OpenWeatherJsonUtils {
 
             int weatherId;
 
-            /* Get the JSON object representing the day */
             JSONObject dayForecast = jsonWeatherArray.getJSONObject(i);
 
-            /*
-             * We ignore all the datetime values embedded in the JSON and assume that
-             * the values are returned in-order by day (which is not guaranteed to be correct).
-             */
             dateTimeMillis = normalizedUtcStartDay + SunshineDateUtils.DAY_IN_MILLIS * i;
 
             pressure = dayForecast.getDouble(OWM_PRESSURE);
@@ -183,27 +178,16 @@ public class OpenWeatherJsonUtils {
             windSpeed = dayForecast.getDouble(OWM_WINDSPEED);
             windDirection = dayForecast.getDouble(OWM_WIND_DIRECTION);
 
-            /*
-             * Description is in a child array called "weather", which is 1 element long.
-             * That element also contains a weather code.
-             */
             JSONObject weatherObject =
                     dayForecast.getJSONArray(OWM_WEATHER).getJSONObject(0);
 
             weatherId = weatherObject.getInt(OWM_WEATHER_ID);
 
-            /*
-             * Temperatures are sent by Open Weather Map in a child object called "temp".
-             *
-             * Editor's Note: Try not to name variables "temp" when working with temperature.
-             * It confuses everybody. Temp could easily mean any number of things, including
-             * temperature, temporary variable, temporary folder, temporary employee, or many
-             * others, and is just a bad variable name.
-             */
             JSONObject temperatureObject = dayForecast.getJSONObject(OWM_TEMPERATURE);
             high = temperatureObject.getDouble(OWM_MAX);
             low = temperatureObject.getDouble(OWM_MIN);
 
+            //ContentValues는 ContentResolver가 처리 할수 있는 값 집합을 저장하는데 사용
             ContentValues weatherValues = new ContentValues();
             weatherValues.put(WeatherContract.WeatherEntry.COLUMN_DATE, dateTimeMillis);
             weatherValues.put(WeatherContract.WeatherEntry.COLUMN_HUMIDITY, humidity);
