@@ -37,8 +37,19 @@
             android:authorities="@string/content_authority"
             android:exported="false"/>
 
+        <!-- 즉각적인 데이터 변경 호출 서비스 -->
         <service
             android:name=".sync.SunshineSyncIntentService"
             android:exported="false" />
+
+        <!-- 백그라운드에서 작업 실행 서비스 -->
+        <service
+            android:name=".sync.SunshineFirebaseJobService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.firebase.jobdispatcher.ACTION_EXECUTE"/>
+            </intent-filter>
+        </service>
+
     </application>
 </manifest>
