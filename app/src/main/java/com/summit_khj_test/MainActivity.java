@@ -95,7 +95,7 @@ public class MainActivity extends AppCompatActivity implements
         getSupportLoaderManager().initLoader(ID_FORECAST_LOADER, null, this);
 
         //서비스 실행
-        SunshineSyncUtils.startImmediateSync(this);
+        SunshineSyncUtils.initialize(this);
     }
 
     //ID를 부여하여 새 로더를 반환
