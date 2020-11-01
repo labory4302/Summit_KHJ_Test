@@ -35,6 +35,7 @@ public class WeatherContract {
                     .build();
         }
 
+        //오늘 이후의 시간 쿼리문 반환
         public static String getSqlSelectForTodayOnwards() {
             long normalizedUtcNow = SunshineDateUtils.normalizeDate(System.currentTimeMillis());
             return WeatherContract.WeatherEntry.COLUMN_DATE + " >= " + normalizedUtcNow;

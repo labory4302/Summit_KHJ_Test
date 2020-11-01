@@ -12,10 +12,7 @@ public class SunshinePreferences {
     //도시 이름
     public static final String PREF_CITY_NAME = "city_name";
 
-    /*
-     * In order to uniquely pinpoint the location on the map when we launch the
-     * map intent, we store the latitude and longitude.
-     */
+    //설정한 좌표값
     public static final String PREF_COORD_LAT = "coord_lat";
     public static final String PREF_COORD_LONG = "coord_long";
 
@@ -34,19 +31,6 @@ public class SunshinePreferences {
         editor.putLong(PREF_COORD_LAT, Double.doubleToRawLongBits(lat));
         editor.putLong(PREF_COORD_LONG, Double.doubleToRawLongBits(lon));
         editor.apply();
-    }
-
-    /**
-     * Helper method to handle setting a new location in preferences.  When this happens
-     * the database may need to be cleared.
-     *
-     * @param c               Context used to get the SharedPreferences
-     * @param locationSetting The location string used to request updates from the server.
-     * @param lat             The latitude of the city
-     * @param lon             The longitude of the city
-     */
-    static public void setLocation(Context c, String locationSetting, double lat, double lon) {
-        /** This will be implemented in a future lesson **/
     }
 
     //기존 좌표값 삭제
@@ -92,15 +76,8 @@ public class SunshinePreferences {
         return getDefaultWeatherCoordinates();
     }
 
-    /**
-     * Returns true if the latitude and longitude values are available. The latitude and
-     * longitude will not be available until the lesson where the PlacePicker API is taught.
-     *
-     * @param context used to get the SharedPreferences
-     * @return true if lat/long are set
-     */
+    //위치가 사용 가능한지의 여부를 판단 (구현되지 않음)
     public static boolean isLocationLatLonAvailable(Context context) {
-        /** This will be implemented in a future lesson **/
         return false;
     }
 
@@ -139,14 +116,8 @@ public class SunshinePreferences {
         return timeSinceLastNotification;
     }
 
-    private static String getDefaultWeatherLocation() {
-        /** This will be implemented in a future lesson **/
-        return DEFAULT_WEATHER_LOCATION;
-    }
-
     //저장된 좌표값 반환
     public static double[] getDefaultWeatherCoordinates() {
-        /** This will be implemented in a future lesson **/
         return DEFAULT_WEATHER_COORDINATES;
     }
 
