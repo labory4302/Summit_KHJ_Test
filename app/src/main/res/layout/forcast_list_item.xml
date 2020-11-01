@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:minHeight="?android:attr/listPreferredItemHeight"
     android:paddingBottom="12dp"
     android:paddingLeft="16dp"
@@ -11,12 +13,12 @@
 
     <ImageView
         android:id="@+id/weather_icon"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
         app:layout_constraintBottom_toTopOf="@+id/guideline"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="@+id/guideline"
-        android:src="@drawable/art_clouds"/>
+        tools:src="@drawable/art_clouds"/>
 
     <TextView
         android:id="@+id/date"
@@ -26,7 +28,7 @@
         android:layout_marginStart="16dp"
         app:layout_constraintBottom_toTopOf="@+id/guideline"
         app:layout_constraintLeft_toRightOf="@+id/weather_icon"
-        android:text="Today, April 03"/>
+        tools:text="Today, April 03"/>
 
     <TextView
         android:id="@+id/weather_description"
@@ -34,7 +36,7 @@
         android:layout_height="wrap_content"
         app:layout_constraintLeft_toLeftOf="@+id/date"
         app:layout_constraintTop_toTopOf="@+id/guideline"
-        android:text="Rainy"/>
+        tools:text="Rainy"/>
 
     <TextView
         android:id="@+id/high_temperature"
@@ -42,27 +44,27 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="4dp"
         android:layout_marginRight="4dp"
-        android:textSize="28dp"
+        android:textSize="22dp"
         app:layout_constraintBottom_toTopOf="@+id/guideline"
         app:layout_constraintRight_toLeftOf="@+id/low_temperature"
         app:layout_constraintTop_toTopOf="@+id/guideline"
-        android:text="19\u00b0"/>
+        tools:text="19\u00b0"/>
 
     <TextView
         android:id="@+id/low_temperature"
         android:layout_width="60dp"
         android:layout_height="wrap_content"
         android:gravity="end"
-        android:textSize="28dp"
+        android:textSize="22dp"
         app:layout_constraintBottom_toBottomOf="@+id/guideline"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="@+id/guideline"
-        android:text="10\u00b0"/>
+        tools:text="10\u00b0"/>
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_constraintGuide_percent="0.5" />
+        app:layout_constraintGuide_percent="0.5" />
 </androidx.constraintlayout.widget.ConstraintLayout>
