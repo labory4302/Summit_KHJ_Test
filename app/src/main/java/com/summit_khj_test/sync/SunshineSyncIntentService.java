@@ -7,7 +7,7 @@ import androidx.annotation.Nullable;
 
 //IntentService는 인텐트를 전달하여 서비스의 어떤 작업을 수행하는데 사용
 public class SunshineSyncIntentService extends IntentService {
-    SunshineSyncIntentService() {
+    public SunshineSyncIntentService() {
         super("SunshineSyncIntentService");
     }
 
