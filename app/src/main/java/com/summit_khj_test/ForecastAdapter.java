@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -37,11 +38,21 @@ public class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.Foreca
     }
 
     class ForecastAdapterViewHolder extends RecyclerView.ViewHolder implements OnClickListener {
-        final TextView weatherSummary;
+        final TextView dateView;
+        final TextView descriptionView;
+        final TextView highTempView;
+        final TextView lowTempView;
+
+        final ImageView iconView;
 
         ForecastAdapterViewHolder(View view) {
             super(view);
-            weatherSummary = (TextView) view.findViewById(R.id.tv_weather_data);
+            dateView = (TextView) view.findViewById(R.id.date);
+            descriptionView = (TextView) view.findViewById(R.id.weather_description);
+            highTempView = (TextView) view.findViewById(R.id.high_temperature);
+            lowTempView = (TextView) view.findViewById(R.id.low_temperature);
+            iconView = (ImageView) view.findViewById(R.id.weather_icon);
+
             view.setOnClickListener(this);
         }
 
@@ -69,24 +80,43 @@ public class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.Foreca
     public void onBindViewHolder(ForecastAdapterViewHolder forecastAdapterViewHolder, int position) {
         mCursor.moveToPosition(position);
 
-        //커서로부터 날짜 데이터를 읽음
-        long dateInMillis = mCursor.getLong(MainActivity.INDEX_WEATHER_DATE);
+        //날씨 아이콘
+        int weatherId = mCursor.getInt(MainActivity.INDEX_WEATHER_CONDITION_ID);
+        int weatherImageId;
+        weatherImageId = SunshineWeatherUtils
+                .getSmallArtResourceIdForWeatherCondition(weatherId);
 
+        forecastAdapterViewHolder.iconView.setImageResource(weatherImageId);
+
+        //날짜
+        long dateInMillis = mCursor.getLong(MainActivity.INDEX_WEATHER_DATE);
         String dateString = SunshineDateUtils.getFriendlyDateString(mContext, dateInMillis, false);
 
-        int weatherId = mCursor.getInt(MainActivity.INDEX_WEATHER_CONDITION_ID);
+        forecastAdapterViewHolder.dateView.setText(dateString);
+
+        //날씨 상태
         String description = SunshineWeatherUtils.getStringForWeatherCondition(mContext, weatherId);
+        String descriptionA11y = mContext.getString(R.string.a11y_forecast, description);
 
-        //최고, 최저 기온
+        forecastAdapterViewHolder.descriptionView.setText(description);
+        forecastAdapterViewHolder.descriptionView.setContentDescription(descriptionA11y);
+
+        //최고 기온
         double highInCelsius = mCursor.getDouble(MainActivity.INDEX_WEATHER_MAX_TEMP);
+        String highString = SunshineWeatherUtils.formatTemperature(mContext, highInCelsius);
+
+        String highA11y = mContext.getString(R.string.a11y_high_temp, highString);
+
+        forecastAdapterViewHolder.highTempView.setText(highString);
+        forecastAdapterViewHolder.highTempView.setContentDescription(highA11y);
+
+        //최저 기온
         double lowInCelsius = mCursor.getDouble(MainActivity.INDEX_WEATHER_MIN_TEMP);
+        String lowString = SunshineWeatherUtils.formatTemperature(mContext, lowInCelsius);
+        String lowA11y = mContext.getString(R.string.a11y_low_temp, lowString);
 
-        String highAndLowTemperature =
-                SunshineWeatherUtils.formatHighLows(mContext, highInCelsius, lowInCelsius);
-
-        String weatherSummary = dateString + " - " + description + " - " + highAndLowTemperature;
-
-        forecastAdapterViewHolder.weatherSummary.setText(weatherSummary);
+        forecastAdapterViewHolder.lowTempView.setText(lowString);
+        forecastAdapterViewHolder.lowTempView.setContentDescription(lowA11y);
     }
 
     //아이템들의 갯수를 반환
