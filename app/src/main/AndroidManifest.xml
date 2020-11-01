@@ -25,13 +25,15 @@
         <activity
             android:name=".DetailActivity"
             android:label="@string/title_activity_detail"
+            android:theme="@style/AppTheme.Forecast"
             android:parentActivityName=".MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MainActivity" />
         </activity>
 
-        <activity android:name=".SettingActivity"/>
+        <activity android:name=".SettingActivity"
+            android:theme="@style/AppTheme.Forecast"/>
 
         <provider
             android:name=".data.WeatherProvider"
