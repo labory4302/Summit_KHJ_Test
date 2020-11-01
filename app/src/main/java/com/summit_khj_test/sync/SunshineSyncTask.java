@@ -3,9 +3,12 @@ package com.summit_khj_test.sync;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
+import android.text.format.DateUtils;
 
+import com.summit_khj_test.data.SunshinePreferences;
 import com.summit_khj_test.data.WeatherContract;
 import com.summit_khj_test.utilities.NetworkUtils;
+import com.summit_khj_test.utilities.NotificationUtils;
 import com.summit_khj_test.utilities.OpenWeatherJsonUtils;
 
 import java.net.URL;
@@ -37,6 +40,21 @@ public class SunshineSyncTask {
                 sunshineContentResolver.bulkInsert(
                         WeatherContract.WeatherEntry.CONTENT_URI,
                         weatherValues);
+
+                //푸시 알림 설정 여부 판단
+                boolean notificationsEnabled = SunshinePreferences.areNotificationsEnabled(context);
+                long timeSinceLastNotification = SunshinePreferences
+                        .getEllapsedTimeSinceLastNotification(context);
+
+                boolean oneDayPassedSinceLastNotification = false;
+
+                if (timeSinceLastNotification >= DateUtils.DAY_IN_MILLIS) {
+                    oneDayPassedSinceLastNotification = true;
+                }
+
+                if (notificationsEnabled && oneDayPassedSinceLastNotification) {
+                    NotificationUtils.notifyUserOfNewWeather(context);
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();

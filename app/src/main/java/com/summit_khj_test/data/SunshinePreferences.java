@@ -104,6 +104,41 @@ public class SunshinePreferences {
         return false;
     }
 
+    //푸시 알림 설정 여부
+    public static boolean areNotificationsEnabled(Context context) {
+        String displayNotificationsKey = context.getString(R.string.pref_enable_notifications_key);
+
+        boolean shouldDisplayNotificationsByDefault = context
+                .getResources()
+                .getBoolean(R.bool.show_notifications_by_default);
+
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+
+        boolean shouldDisplayNotifications = sp
+                .getBoolean(displayNotificationsKey, shouldDisplayNotificationsByDefault);
+
+        return shouldDisplayNotifications;
+    }
+
+    //최근 푸시 알림 시간
+    public static long getLastNotificationTimeInMillis(Context context) {
+        String lastNotificationKey = context.getString(R.string.pref_last_notification);
+
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+
+        long lastNotificationTime = sp.getLong(lastNotificationKey, 0);
+
+        return lastNotificationTime;
+    }
+
+    //마지막 푸시 알림 후 경과 시간
+    public static long getEllapsedTimeSinceLastNotification(Context context) {
+        long lastNotificationTimeMillis =
+                SunshinePreferences.getLastNotificationTimeInMillis(context);
+        long timeSinceLastNotification = System.currentTimeMillis() - lastNotificationTimeMillis;
+        return timeSinceLastNotification;
+    }
+
     private static String getDefaultWeatherLocation() {
         /** This will be implemented in a future lesson **/
         return DEFAULT_WEATHER_LOCATION;
@@ -113,5 +148,14 @@ public class SunshinePreferences {
     public static double[] getDefaultWeatherCoordinates() {
         /** This will be implemented in a future lesson **/
         return DEFAULT_WEATHER_COORDINATES;
+    }
+
+    //알림이 표시되는 시간을 저장
+    public static void saveLastNotificationTime(Context context, long timeOfNotification) {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+        SharedPreferences.Editor editor = sp.edit();
+        String lastNotificationKey = context.getString(R.string.pref_last_notification);
+        editor.putLong(lastNotificationKey, timeOfNotification);
+        editor.apply();
     }
 }
