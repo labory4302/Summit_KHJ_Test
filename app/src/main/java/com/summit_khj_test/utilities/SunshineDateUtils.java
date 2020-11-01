@@ -7,13 +7,35 @@ import com.summit_khj_test.R;
 
 import java.text.SimpleDateFormat;
 import java.util.TimeZone;
+import java.util.concurrent.TimeUnit;
 
 public class SunshineDateUtils {
 
-    public static final long SECOND_IN_MILLIS = 1000;
-    public static final long MINUTE_IN_MILLIS = SECOND_IN_MILLIS * 60;
-    public static final long HOUR_IN_MILLIS = MINUTE_IN_MILLIS * 60;
-    public static final long DAY_IN_MILLIS = HOUR_IN_MILLIS * 24;
+    public static final long DAY_IN_MILLIS = TimeUnit.DAYS.toMillis(1);
+
+    public static long getNormalizedUtcDateForToday() {
+        //1970년 1월 1일 자정 이후 경과 된 밀리 초 수
+        long utcNowMillis = System.currentTimeMillis();
+
+        //기기의 현재 시간대
+        TimeZone currentTimeZone = TimeZone.getDefault();
+
+        //UTC와 현재시간의 차이 offset 값
+        long gmtOffsetMillis = currentTimeZone.getOffset(utcNowMillis);
+
+        //UTC에 local time oddset값을 반영하여 시간 생성
+        long timeSinceEpochLocalTimeMillis = utcNowMillis + gmtOffsetMillis;
+
+        //밀리초를 day로 반환
+        long daysSinceEpochLocal = TimeUnit.MILLISECONDS.toDays(timeSinceEpochLocalTimeMillis);
+
+        //다시 밀리초로 변환. GMT기준
+        long normalizedUtcMidnightMillis = TimeUnit.DAYS.toMillis(daysSinceEpochLocal);
+
+        return normalizedUtcMidnightMillis;
+    }
+
+
 
     public static long getDayNumber(long date) {
         TimeZone tz = TimeZone.getDefault();

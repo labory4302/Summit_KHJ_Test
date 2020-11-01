@@ -1,7 +1,10 @@
 package com.summit_khj_test.utilities;
 
+import android.content.Context;
 import android.net.Uri;
 import android.util.Log;
+
+import com.summit_khj_test.data.SunshinePreferences;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -11,6 +14,8 @@ import java.net.URL;
 import java.util.Scanner;
 
 public final class NetworkUtils {
+
+    private static final String TAG = NetworkUtils.class.getSimpleName();
 
     private static final String DYNAMIC_WEATHER_URL =
             "https://andfun-weather.udacity.com/weather";
@@ -35,11 +40,40 @@ public final class NetworkUtils {
     final static String UNITS_PARAM = "units";
     final static String DAYS_PARAM = "cnt";
 
-    //API 요청 동적 URL 생성 메소드
-    public static URL buildUrl(String locationQuery) {
-        URL url = null;
+    public static URL getUrl(Context context) {
+        if (SunshinePreferences.isLocationLatLonAvailable(context)) {
+            double[] preferredCoordinates = SunshinePreferences.getLocationCoordinates(context);
+            double latitude = preferredCoordinates[0];
+            double longitude = preferredCoordinates[1];
+            return buildUrlWithLatitudeLongitude(latitude, longitude);
+        } else {
+            String locationQuery = SunshinePreferences.getPreferredWeatherLocation(context);
+            return buildUrlWithLocationQuery(locationQuery);
+        }
+    }
 
-        Uri builtUri = Uri.parse(FORECAST_BASE_URL).buildUpon()
+    //좌표값에 따른 URL 쿼리 반환
+    private static URL buildUrlWithLatitudeLongitude(Double latitude, Double longitude) {
+        Uri weatherQueryUri = Uri.parse(FORECAST_BASE_URL).buildUpon()
+                .appendQueryParameter(LAT_PARAM, String.valueOf(latitude))
+                .appendQueryParameter(LON_PARAM, String.valueOf(longitude))
+                .appendQueryParameter(FORMAT_PARAM, format)
+                .appendQueryParameter(UNITS_PARAM, units)
+                .appendQueryParameter(DAYS_PARAM, Integer.toString(numDays))
+                .build();
+
+        try {
+            URL weatherQueryUrl = new URL(weatherQueryUri.toString());
+            Log.v(TAG, "URL: " + weatherQueryUrl);
+            return weatherQueryUrl;
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    private static URL buildUrlWithLocationQuery(String locationQuery) {
+        Uri weatherQueryUri = Uri.parse(FORECAST_BASE_URL).buildUpon()
                 .appendQueryParameter(QUERY_PARAM, locationQuery)
                 .appendQueryParameter(FORMAT_PARAM, format)
                 .appendQueryParameter(UNITS_PARAM, units)
@@ -47,14 +81,13 @@ public final class NetworkUtils {
                 .build();
 
         try {
-            url = new URL(builtUri.toString());
+            URL weatherQueryUrl = new URL(weatherQueryUri.toString());
+            Log.v(TAG, "URL: " + weatherQueryUrl);
+            return weatherQueryUrl;
         } catch (MalformedURLException e) {
             e.printStackTrace();
+            return null;
         }
-
-        Log.v("TAG", "만들어진 URI 확인 : " + url);
-
-        return url;
     }
 
     public static String getResponseFromHttpUrl(URL url) throws IOException {

@@ -27,6 +27,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.summit_khj_test.data.WeatherContract;
+import com.summit_khj_test.sync.SunshineSyncUtils;
 import com.summit_khj_test.utilities.FakeDataUtils;
 import com.summit_khj_test.utilities.NetworkUtils;
 import com.summit_khj_test.utilities.OpenWeatherJsonUtils;
@@ -69,8 +70,6 @@ public class MainActivity extends AppCompatActivity implements
         setContentView(R.layout.activity_main);
         getSupportActionBar().setElevation(0f);
 
-        FakeDataUtils.insertFakeData(this);
-
         mLoadingIndicator = (ProgressBar) findViewById(R.id.pb_loading_indicator);
         mRecyclerView = (RecyclerView) findViewById(R.id.rv_forecast);
 
@@ -94,6 +93,9 @@ public class MainActivity extends AppCompatActivity implements
         //로더가 없는 경우 로더를 생성하고 시작
         //그렇지 않은 경우 마지막으로 생성된 로더가 다시 사용됨
         getSupportLoaderManager().initLoader(ID_FORECAST_LOADER, null, this);
+
+        //서비스 실행
+        SunshineSyncUtils.startImmediateSync(this);
     }
 
     //ID를 부여하여 새 로더를 반환
