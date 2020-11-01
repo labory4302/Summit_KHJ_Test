@@ -5,8 +5,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingBottom="16dp"
-    android:paddingTop="16dp" >
+    android:background="@drawable/today_touch_selector"
+    android:paddingBottom="@dimen/today_forecast_list_item_vertical_padding"
+    android:paddingTop="@dimen/today_forecast_list_item_vertical_padding" >
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/horizontal_middle"
@@ -14,14 +15,17 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         app:layout_constraintGuide_percent="0.5"
-        app:layout_editor_absoluteX="192dp"
-        app:layout_editor_absoluteY="0dp" />
+        tools:layout_editor_absoluteX="192dp"
+        tools:layout_editor_absoluteY="0dp" />
 
     <TextView
         android:id="@+id/date"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
+        android:fontFamily="sans-serif"
+        android:textAppearance="@style/TextAppearance.AppCompat.Title"
+        android:textColor="@color/white"
         android:textSize="20sp"
         app:layout_constraintBottom_toTopOf="@+id/weather_icon"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -44,6 +48,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
+        android:textColor="@color/white"
         android:textSize="20sp"
         app:layout_constraintHorizontal_bias="0.52"
         app:layout_constraintLeft_toLeftOf="@+id/weather_icon"
@@ -55,6 +60,8 @@
         android:id="@+id/high_temperature"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:fontFamily="sans-serif-light"
+        android:textColor="@color/white"
         android:textSize="72sp"
         app:layout_constraintBottom_toBottomOf="@+id/weather_icon"
         app:layout_constraintHorizontal_bias="0.45"
@@ -67,6 +74,8 @@
         android:id="@+id/low_temperature"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:fontFamily="sans-serif-light"
+        android:textColor="@color/white"
         android:textSize="36sp"
         app:layout_constraintBaseline_toBaselineOf="@+id/weather_description"
         app:layout_constraintLeft_toLeftOf="@+id/high_temperature"
