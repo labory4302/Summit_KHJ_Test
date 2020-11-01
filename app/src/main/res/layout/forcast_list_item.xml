@@ -13,8 +13,8 @@
 
     <ImageView
         android:id="@+id/weather_icon"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
         app:layout_constraintBottom_toTopOf="@+id/guideline"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="@+id/guideline"
@@ -44,7 +44,7 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="4dp"
         android:layout_marginRight="4dp"
-        android:textSize="22dp"
+        android:textSize="23dp"
         app:layout_constraintBottom_toTopOf="@+id/guideline"
         app:layout_constraintRight_toLeftOf="@+id/low_temperature"
         app:layout_constraintTop_toTopOf="@+id/guideline"
@@ -55,7 +55,7 @@
         android:layout_width="60dp"
         android:layout_height="wrap_content"
         android:gravity="end"
-        android:textSize="22dp"
+        android:textSize="23dp"
         app:layout_constraintBottom_toBottomOf="@+id/guideline"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="@+id/guideline"
