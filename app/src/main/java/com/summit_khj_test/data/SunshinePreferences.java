@@ -114,4 +114,13 @@ public class SunshinePreferences {
         /** This will be implemented in a future lesson **/
         return DEFAULT_WEATHER_COORDINATES;
     }
+
+    //알림이 표시되는 시간을 저장
+    public static void saveLastNotificationTime(Context context, long timeOfNotification) {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+        SharedPreferences.Editor editor = sp.edit();
+        String lastNotificationKey = context.getString(R.string.pref_last_notification);
+        editor.putLong(lastNotificationKey, timeOfNotification);
+        editor.apply();
+    }
 }
