@@ -49,13 +49,14 @@ public class SunshinePreferences {
         /** This will be implemented in a future lesson **/
     }
 
-    /**
-     * Resets the stored location coordinates.
-     *
-     * @param c Context used to get the SharedPreferences
-     */
-    static public void resetLocationCoordinates(Context c) {
-        /** This will be implemented in a future lesson **/
+    //기존 좌표값 삭제
+    static public void resetLocationCoordinates(Context context) {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+        SharedPreferences.Editor editor = sp.edit();
+
+        editor.remove(PREF_COORD_LAT);
+        editor.remove(PREF_COORD_LONG);
+        editor.apply();
     }
 
     //유저가 설정한 위치값 반환

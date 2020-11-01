@@ -1,5 +1,6 @@
 package com.summit_khj_test;
 
+import android.app.Activity;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 
@@ -8,6 +9,10 @@ import androidx.preference.ListPreference;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.PreferenceScreen;
+
+import com.summit_khj_test.data.SunshinePreferences;
+import com.summit_khj_test.data.WeatherContract;
+import com.summit_khj_test.sync.SunshineSyncUtils;
 
 public class SettingsFragment extends PreferenceFragmentCompat
         implements SharedPreferences.OnSharedPreferenceChangeListener {
@@ -49,9 +54,18 @@ public class SettingsFragment extends PreferenceFragmentCompat
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        Activity activity = getActivity();
+
+        if (key.equals(getString(R.string.pref_location_key))) {
+            SunshinePreferences.resetLocationCoordinates(activity);
+            SunshineSyncUtils.startImmediateSync(activity);
+        } else if (key.equals(getString(R.string.pref_units_key))) {
+            activity.getContentResolver().notifyChange(WeatherContract.WeatherEntry.CONTENT_URI, null);
+        }
+
         Preference preference = findPreference(key);
-        if(null != preference) {
-            if(!(preference instanceof CheckBoxPreference)) {
+        if (null != preference) {
+            if (!(preference instanceof CheckBoxPreference)) {
                 setPreferenceSummary(preference, sharedPreferences.getString(key, ""));
             }
         }
