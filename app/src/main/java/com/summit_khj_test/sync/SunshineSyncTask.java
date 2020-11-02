@@ -4,7 +4,9 @@ import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.text.format.DateUtils;
+import android.util.Log;
 
+import com.summit_khj_test.MainActivity;
 import com.summit_khj_test.data.SunshinePreferences;
 import com.summit_khj_test.data.WeatherContract;
 import com.summit_khj_test.utilities.NetworkUtils;
@@ -15,6 +17,8 @@ import java.net.URL;
 
 //유효한 데이터가 들어오면 이전 데이터를 삭제하고 새로운 데이터를 삽입
 public class SunshineSyncTask {
+
+    private static final String TAG = SunshineSyncTask.class.getSimpleName();
 
     //synchronized multi-thread로 동시접근되는것을 막는다 (단순한 개념)
     synchronized public static void syncWeather(Context context) {
@@ -28,6 +32,7 @@ public class SunshineSyncTask {
 
             //만약 가져온 데이터에 오류가 없다면
             if (weatherValues != null && weatherValues.length != 0) {
+                Log.d(TAG, "workManager 실행 완료");
                 ContentResolver sunshineContentResolver = context.getContentResolver();
 
                 //과거 데이터 삭제
