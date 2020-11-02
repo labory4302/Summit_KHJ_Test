@@ -3,33 +3,35 @@ package com.summit_khj_test.sync;
 import android.content.Context;
 import android.os.AsyncTask;
 
+import androidx.annotation.NonNull;
 import androidx.work.ListenableWorker;
 
+import androidx.work.Worker;
 import androidx.work.WorkerParameters;
 import com.google.common.util.concurrent.ListenableFuture;
 
-public class SunshineWorkManager extends ListenableWorker {
-
-    private AsyncTask<Void, Void, Void> mFetchWeatherTask;
+//백그라운드 작업 정의
+public class SunshineWorkManager extends Worker {
 
     public SunshineWorkManager(Context context, WorkerParameters params) {
         super(context, params);
     }
 
     @Override
-    public ListenableFuture<Result> startWork() {
-        //스레드를 사용하여 작업 생성
-        //workManager에서 스레딩을 통한 작업 방법 알아야 함
+    public Result doWork() {
+        try {
+            //임시로 스레드 사용
+            Context context = getApplicationContext();
+            SunshineSyncTask.syncWeather(context);
+            Thread.sleep(2000);
+        } catch (Exception e) {
+            return Result.failure();
+        }
 
-        //ListenableWorker의 스레딩
-        //https://developer.android.com/topic/libraries/architecture/workmanager/advanced/listenableworker?hl=ko
-
-        //Firebase JobDispatcher에서 WorkManager로 이전
-        //https://developer.android.com/topic/libraries/architecture/workmanager/migrating-fb?hl=ko
-
-        return (ListenableFuture<Result>) Result.success();
+        return Result.success();
     }
 
+    //추후 구현 요망
     @Override
     public void onStopped() {
         super.onStopped();
