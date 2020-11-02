@@ -6,6 +6,13 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
 
+import androidx.work.Constraints;
+import androidx.work.NetworkType;
+import androidx.work.OneTimeWorkRequest;
+import androidx.work.PeriodicWorkRequest;
+import androidx.work.WorkManager;
+import androidx.work.WorkRequest;
+
 import com.firebase.jobdispatcher.Constraint;
 import com.firebase.jobdispatcher.Driver;
 import com.firebase.jobdispatcher.FirebaseJobDispatcher;
@@ -14,6 +21,7 @@ import com.firebase.jobdispatcher.Job;
 import com.firebase.jobdispatcher.Lifetime;
 import com.firebase.jobdispatcher.Trigger;
 import com.summit_khj_test.data.WeatherContract;
+import com.summit_khj_test.sync.SunshineWorkManager;
 
 import java.util.concurrent.TimeUnit;
 
@@ -51,13 +59,25 @@ public class SunshineSyncUtils {
         dispatcher.schedule(syncSunshineJob);   //작업 예약
     }
 
+    static void scheduleWorkManagerSync(Context context) {
+        //후에 추가할 옵션
+        Constraints constraints = new Constraints.Builder()
+                .setRequiredNetworkType(NetworkType.UNMETERED)
+                .build();
+
+        WorkRequest myWorkRequest = OneTimeWorkRequest.from(SunshineWorkManager.class);
+
+        WorkManager.getInstance(context).enqueue(myWorkRequest);
+    }
+
     //주기적인 동기화 작업을 생성하고 동기화 필요 여부 확인
     synchronized public static void initialize(final Context context) {
         if (sInitialized)
             return;
         sInitialized = true;
 
-        scheduleFirebaseJobDispatcherSync(context);
+        //scheduleFirebaseJobDispatcherSync(context);
+        scheduleWorkManagerSync(context);
 
         Thread checkForEmpty = new Thread(new Runnable() {
             @Override

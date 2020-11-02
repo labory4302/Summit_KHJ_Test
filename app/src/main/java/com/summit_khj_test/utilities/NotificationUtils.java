@@ -34,6 +34,7 @@ public class NotificationUtils {
 
     private static final int WEATHER_NOTIFICATION_ID = 1234;
 
+    //푸시알림 채널 생성 요망
     public static void notifyUserOfNewWeather(Context context) {
         Uri todaysWeatherUri = WeatherContract.WeatherEntry
                 .buildWeatherUriWithDate(SunshineDateUtils.normalizeDate(System.currentTimeMillis()));
